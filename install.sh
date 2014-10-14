@@ -52,7 +52,8 @@ if [ $CODEX == "y" ]; then
 	echo "Installing Node.js"
 	curl -sL https://rpm.nodesource.com/setup | bash - #> /dev/null 2>&1
 	yum install -y nodejs
-	yum groupinstall -y 'Development Tools' #> /dev/null 2>&1
+	# yum groupinstall -y 'Development Tools' #> /dev/null 2>&1
+	yum install -y gcc-c++ make #> /dev/null 2>&1 ALTERNAME??
 	echo "Installing NPM modules"
 	git clone git://github.com/isaacs/npm.git
 	cd npm
