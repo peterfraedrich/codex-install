@@ -25,7 +25,7 @@ if [ $DB == "y" ]; then
 	else
 		echo ""
 		echo "Installing MongoDB backend..."
-		cd ~
+		cd ~/codex-install
 		cp ./mongodb.repo /etc/yum.repos.d/ #> /dev/null 2>&1
 		yum install -y mongodb-org #> /dev/null 2>&1
 	fi
