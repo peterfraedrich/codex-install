@@ -77,8 +77,9 @@ if [ $CODEX == "y" ]; then
 	yum install -y nodejs >> /root/codex-install/install.log 2>&1
 	echo "done."
 	echo -n "Installing NodeJS modules..."
+	cd /root
 	git clone git://github.com/isaacs/npm.git >> /root/codex-install/install.log 2>&1
-	cd /codex/npm
+	cd /root/npm
 	make install >> /root/codex-install/install.log 2>&1
 	cd /codex
 	npm install >> /root/codex-install/install.log 2>&1
