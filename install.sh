@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo "###############################################################"
+echo "#                                                             #"
+echo "#                        Codex 1 (Alpha)                      #"
+echo "#                                                             #"
+echo "###############################################################"
+
 ARCH=`uname -m`
 
 rm -f /root/codex-install/install.log > /dev/null 2>&1
@@ -8,7 +14,7 @@ cd /root
 
 echo ""
 echo "WARNING: This installer must be run from /root/codex-install."
-read -p "Would you like to continue? (y/n):" GOODPATH
+read -p "Would you like to continue? (y/n): " GOODPATH
 if [ $GOODPATH == "n" ]; then
 	exit
 fi
@@ -58,6 +64,7 @@ if [ $CODEX == "y" ]; then
 	tar -zxvf codex_1_0_alpha.tar.gz >> /root/codex-install/install.log 2>&1
 	rm -f codex_1_0_alpha.tar.gz
 	echo "done."
+	echo ""
 	echo "Configuring Codex for this machine..."
 	read -p "Type the name of the machine's ethernet port: " ETH
 	ifconfig $ETH | grep "inet addr" > /root/codex-install/eth
@@ -65,6 +72,7 @@ if [ $CODEX == "y" ]; then
 	rm -f /root/codex-install/eth
 	echo "Done configuring."
 	cd /root
+	echo ""
 	echo -n "Installing Python + pip..."
 	wget https://bootstrap.pypa.io/get-pip.py >> /root/codex-install/install.log 2>&1
 	chmod +x get-pip.py >> /root/codex-install/install.log 2>&1
@@ -72,18 +80,20 @@ if [ $CODEX == "y" ]; then
 	rm -f get-pip.py >> /root/codex-install/install.log 2>&1
 	pip install pymongo >> /root/codex-install/install.log 2>&1
 	echo "done."
+	echo ""
 	echo -n "Installing Node.js..."
 	curl -sL https://rpm.nodesource.com/setup | bash - >> /root/codex-install/install.log 2>&1
 	yum install -y nodejs >> /root/codex-install/install.log 2>&1
 	echo "done."
+	echo ""
 	echo -n "Installing NodeJS modules..."
 	cd /root
 	git clone git://github.com/isaacs/npm.git >> /root/codex-install/install.log 2>&1
-	cd /root/npm
 	make install >> /root/codex-install/install.log 2>&1
 	cd /codex
 	npm install >> /root/codex-install/install.log 2>&1
 	echo "done."
+	echo ""
 	echo -n "Setting security settings..."
 	service iptables stop >> /root/codex-install/install.log 2>&1
 	service ip6tables stop >> /root/codex-install/install.log 2>&1
@@ -91,15 +101,14 @@ if [ $CODEX == "y" ]; then
 	chkconfig ip6tables off >> /root/codex-install/install.log 2>&1
 	echo "done."
 fi
-
+echo ""
 echo "Finished up. Exiting."
 touch /codex/log/node_server.log
 touch /codex/log/angularjs.log
 echo "Install log at /root/codex-install/install.log"
-echo "install complete." >> /root/codex-install/install.log 2>&1
+echo "Install complete." >> /root/codex-install/install.log 2>&1
 echo ""
 read -p "Would you like to start the database engine now? (y/n): " STARTUP
 if [ $STARTUP == 'y' ]; then
-	echo -n "Starting MongoDB engine now..."
 	service mongod start
 fi
