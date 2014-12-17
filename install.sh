@@ -34,10 +34,10 @@ if [ $DB == "y" ]; then
 	else
 		echo ""
 		echo -n "Installing MongoDB backend..."
-		echo "Installing MongoDB" > /root/codex-install/install.log
+		echo "Installing MongoDB" >> /root/codex-install/install.log 2>&1
 		cd /root/codex-install
-		cp /root/codex-install/mongodb.repo /etc/yum.repos.d/ > /root/codex-install/install.log
-		yum install -y mongodb-org > /root/codex-install/install.log
+		cp /root/codex-install/mongodb.repo /etc/yum.repos.d/ >> /root/codex-install/install.log 2>&1
+		yum install -y mongodb-org >> /root/codex-install/install.log 2>&1
 		echo "done."
 	fi
 else
@@ -47,49 +47,56 @@ else
 fi
 
 if [ $CODEX == "y" ]; then
-	echo "Installing Codex" > /root/codex-install/install.log
+	echo "Installing Codex" >> /root/codex-install/install.log 2>&1
 	echo ""
 	echo -n "Installing dependencies..."
-	yum install -y python wget gcc-c++ make > /root/codex-install/install.log
+	yum install -y python wget gcc-c++ make >> /root/codex-install/install.log 2>&1
 	echo "done."
 	cd /
 	echo -n "Getting Codex source code..."
-	wget http://coldblue-usa.com/repo/codex_1_0_alpha.tar.gz > /root/codex-install/install.log
-	tar -zxvf codex_1_0_alpha.tar.gz > /root/codex-install/install.log
+	wget http://coldblue-usa.com/repo/codex_1_0_alpha.tar.gz >> /root/codex-install/install.log 2>&1
+	tar -zxvf codex_1_0_alpha.tar.gz >> /root/codex-install/install.log 2>&1
 	rm -f codex_1_0_alpha.tar.gz
 	echo "done."
+	echo "Configuring Codex for this machine..."
+	read -p "Type the name of the machine's ethernet port: " ETH
+	ifconfig $ETH | grep "inet addr" > /root/codex-install/eth
+	python /root/codex-install/config.py 
+	rm -f /root/codex-install/eth
+	echo "Done configuring."
 	cd /root
 	echo -n "Installing Python + pip..."
-	wget https://bootstrap.pypa.io/get-pip.py > /root/codex-install/install.log
-	chmod +x get-pip.py > /root/codex-install/install.log
-	python ./get-pip.py > /root/codex-install/install.log
-	rm -f get-pip.py > /root/codex-install/install.log
-	pip install pymongo > /root/codex-install/install.log
+	wget https://bootstrap.pypa.io/get-pip.py >> /root/codex-install/install.log 2>&1
+	chmod +x get-pip.py >> /root/codex-install/install.log 2>&1
+	python ./get-pip.py >> /root/codex-install/install.log 2>&1
+	rm -f get-pip.py >> /root/codex-install/install.log 2>&1
+	pip install pymongo >> /root/codex-install/install.log 2>&1
 	echo "done."
 	echo -n "Installing Node.js..."
-	curl -sL https://rpm.nodesource.com/setup | bash - > /root/codex-install/install.log
-	yum install -y nodejs > /root/codex-install/install.log
+	curl -sL https://rpm.nodesource.com/setup | bash - >> /root/codex-install/install.log 2>&1
+	yum install -y nodejs >> /root/codex-install/install.log 2>&1
 	echo "done."
 	echo -n "Installing NodeJS modules..."
-	git clone git://github.com/isaacs/npm.git > /root/codex-install/install.log
+	git clone git://github.com/isaacs/npm.git >> /root/codex-install/install.log 2>&1
 	cd /codex/npm
-	make install > /root/codex-install/install.log
+	make install >> /root/codex-install/install.log 2>&1
 	cd /codex
-	npm install > /root/codex-install/install.log
+	npm install >> /root/codex-install/install.log 2>&1
 	echo "done."
 	echo -n "Setting security settings..."
-	service iptables stop > /root/codex-install/install.log
-	service ip6tables stop > /root/codex-install/install.log
-	chkconfig iptables off > /root/codex-install/install.log
-	chkconfig ip6tables off > /root/codex-install/install.log
+	service iptables stop >> /root/codex-install/install.log 2>&1
+	service ip6tables stop >> /root/codex-install/install.log 2>&1
+	chkconfig iptables off >> /root/codex-install/install.log 2>&1
+	chkconfig ip6tables off >> /root/codex-install/install.log 2>&1
 	echo "done."
 fi
 
 echo "Finished up. Exiting."
 echo "Install log at /root/codex-install/install.log"
-echo "install complete." > /root/codex-install/install.log
+echo "install complete." >> /root/codex-install/install.log 2>&1
 echo ""
 read -p "Would you like to start the database engine now? (y/n): " STARTUP
 if [ $STARTUP == 'y' ]; then
+	echo -n "Starting MongoDB engine now..."
 	service mongod start
 fi

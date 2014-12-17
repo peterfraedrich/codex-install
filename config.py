@@ -3,7 +3,7 @@
 # config.py
 
 def get_eth_port():
-	r = open('eth', 'r')
+	r = open('/root/codex-install/eth', 'r')
 	a = r.readlines()
 	a = a[0].strip(' ')
 	a = a.split('inet addr:')
