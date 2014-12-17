@@ -88,3 +88,8 @@ fi
 echo "Finished up. Exiting."
 echo "Install log at /root/codex-install/install.log"
 echo "install complete." > /root/codex-install/install.log
+echo ""
+read -p "Would you like to start the database engine now? (y/n): " STARTUP
+if [ $STARTUP == 'y' ]; then
+	service mongod start
+fi
