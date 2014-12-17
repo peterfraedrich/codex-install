@@ -8,8 +8,8 @@ cd /root
 
 echo ""
 echo "WARNING: This installer must be run from /root/codex-install."
-read -p "Would you like to continue? (y/n):" DIR
-if [$DIR == "n" ]: then
+read -p "Would you like to continue? (y/n):" GOODPATH
+if [ $GOODPATH == "n" ]; then
 	exit
 fi
 
@@ -64,18 +64,18 @@ if [ $CODEX == "y" ]; then
 	chmod +x get-pip.py > /root/codex-install/install.log
 	python ./get-pip.py > /root/codex-install/install.log
 	rm -f get-pip.py > /root/codex-install/install.log
-	pip install pymongo
+	pip install pymongo > /root/codex-install/install.log
 	echo "done."
 	echo -n "Installing Node.js..."
 	curl -sL https://rpm.nodesource.com/setup | bash - > /root/codex-install/install.log
-	yum install -y nodejs
+	yum install -y nodejs > /root/codex-install/install.log
 	echo "done."
 	echo -n "Installing NodeJS modules..."
-	git clone git://github.com/isaacs/npm.git
+	git clone git://github.com/isaacs/npm.git > /root/codex-install/install.log
 	cd /codex/npm
-	make install
+	make install > /root/codex-install/install.log
 	cd /codex
-	npm install #> /dev/null 2>&1
+	npm install > /root/codex-install/install.log
 	echo "done."
 	echo -n "Setting security settings..."
 	service iptables stop > /root/codex-install/install.log
