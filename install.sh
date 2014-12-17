@@ -2,7 +2,16 @@
 
 ARCH=`uname -m`
 
-cd ~
+rm -f /root/codex-install/install.log > /dev/null 2>&1
+
+cd /root
+
+echo ""
+echo "WARNING: This installer must be run from /root/codex-install."
+read -p "Would you like to continue? (y/n):" DIR
+if [$DIR == "n" ]: then
+	exit
+fi
 
 echo ""
 echo "You must have internet connectivity to install CODEX with this installer."
@@ -12,8 +21,8 @@ if [ $INTERNET == "n" ]; then
 fi
 
 echo ""
-read -p "Install CODEX on this machine? (y/n): " CODEX
-read -p "install DB on this machine? (y/n): " DB
+read -p "Install Codex on this machine? (y/n): " CODEX
+read -p "Install MongoDB on this machine? (y/n): " DB
 
 if [ $DB == "y" ]; then
 	if [ $ARCH != "x86_64" ]; then
@@ -24,10 +33,12 @@ if [ $DB == "y" ]; then
 		fi
 	else
 		echo ""
-		echo "Installing MongoDB backend..."
-		cd ~/codex-install
-		cp ./mongodb.repo /etc/yum.repos.d/ #> /dev/null 2>&1
-		yum install -y mongodb-org #> /dev/null 2>&1
+		echo -n "Installing MongoDB backend..."
+		echo "Installing MongoDB" > /root/codex-install/install.log
+		cd /root/codex-install
+		cp /root/codex-install/mongodb.repo /etc/yum.repos.d/ > /root/codex-install/install.log
+		yum install -y mongodb-org > /root/codex-install/install.log
+		echo "done."
 	fi
 else
 	echo ""
@@ -36,35 +47,44 @@ else
 fi
 
 if [ $CODEX == "y" ]; then
+	echo "Installing Codex" > /root/codex-install/install.log
 	echo ""
-	echo "Getting CODEX source"
-	yum install -y git #> /dev/null 2>&1
+	echo -n "Installing dependencies..."
+	yum install -y python wget gcc-c++ make > /root/codex-install/install.log
+	echo "done."
 	cd /
-	git clone https://github.com/peterfraedrich/codex.git #> /dev/null 2>&1
-	cd ~
-	echo "Installing Python + pip"
-	yum install -y python wget #> /dev/null 2>&1
-	wget https://bootstrap.pypa.io/get-pip.py #> /dev/null 2>&1
-	chmod +x get-pip.py #> /dev/null 2>&1
-	python ./get-pip.py #> /dev/null 2>&1
-	rm -f get-pip.py #> /dev/null 2>&1
+	echo -n "Getting Codex source code..."
+	wget http://coldblue-usa.com/repo/codex_1_0_alpha.tar.gz > /root/codex-install/install.log
+	tar -zxvf codex_1_0_alpha.tar.gz > /root/codex-install/install.log
+	rm -f codex_1_0_alpha.tar.gz
+	echo "done."
+	cd /root
+	echo -n "Installing Python + pip..."
+	wget https://bootstrap.pypa.io/get-pip.py > /root/codex-install/install.log
+	chmod +x get-pip.py > /root/codex-install/install.log
+	python ./get-pip.py > /root/codex-install/install.log
+	rm -f get-pip.py > /root/codex-install/install.log
 	pip install pymongo
-	echo "Installing Node.js"
-	curl -sL https://rpm.nodesource.com/setup | bash - #> /dev/null 2>&1
+	echo "done."
+	echo -n "Installing Node.js..."
+	curl -sL https://rpm.nodesource.com/setup | bash - > /root/codex-install/install.log
 	yum install -y nodejs
-	# yum groupinstall -y 'Development Tools' #> /dev/null 2>&1
-	yum install -y gcc-c++ make #> /dev/null 2>&1 ALTERNAME??
-	echo "Installing NPM modules"
+	echo "done."
+	echo -n "Installing NodeJS modules..."
 	git clone git://github.com/isaacs/npm.git
-	cd npm
+	cd /codex/npm
 	make install
 	cd /codex
 	npm install #> /dev/null 2>&1
-	echo "Setting security settings"
-	service iptables stop #> /dev/null 2>&1
-	service ip6tables stop #> /dev/null 2>&1
-	chkconfig iptables off #> /dev/null 2>&1
-	chkconfig ip6tables off #> /dev/null 2>&1
+	echo "done."
+	echo -n "Setting security settings..."
+	service iptables stop > /root/codex-install/install.log
+	service ip6tables stop > /root/codex-install/install.log
+	chkconfig iptables off > /root/codex-install/install.log
+	chkconfig ip6tables off > /root/codex-install/install.log
+	echo "done."
 fi
 
 echo "Finished up. Exiting."
+echo "Install log at /root/codex-install/install.log"
+echo "install complete." > /root/codex-install/install.log
