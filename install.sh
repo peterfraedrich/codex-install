@@ -92,6 +92,8 @@ if [ $CODEX == "y" ]; then
 fi
 
 echo "Finished up. Exiting."
+touch /codex/log/node_server.log
+touch /codex/log/angularjs.log
 echo "Install log at /root/codex-install/install.log"
 echo "install complete." >> /root/codex-install/install.log 2>&1
 echo ""
